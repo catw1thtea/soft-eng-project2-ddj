@@ -44,7 +44,7 @@ You need Python 3.10 or newer and git installed.
 
    ```
    python3 -m venv venv
-   source venv/bin/activate        # Mac/Linux
+   source .venv/bin/activate        # Mac/Linux
    venv\Scripts\activate           # Windows
    ```
 
