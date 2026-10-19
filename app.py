@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime, timezone
 
 from bson.objectid import ObjectId
@@ -194,7 +195,7 @@ def film_stats(film_id):
         {"$group": {"_id": None, "avg": {"$avg": "$rating"}, "count": {"$sum": 1}}},
     ]
     rows = list(db.reviews.aggregate(pipeline))
-    if not rows:
+    if not rows or not rows[0]["count"] or rows[0]["avg"] is None:
         return None, 0
     return round(rows[0]["avg"], 1), rows[0]["count"]
 
@@ -212,6 +213,27 @@ def film(film_id):
     reviews = list(db.reviews.find({"film_id": film_id}).sort("created_at", -1))
     avg, count = film_stats(film_id)
     return render_template("film.html", film=doc, reviews=reviews, avg=avg, count=count)
+
+
+# search
+
+
+@app.route("/search")
+@login_required
+def search():
+    q = request.args.get("q", "").strip()
+    films, reviews = [], []
+    if q:
+        pattern = {"$regex": re.escape(q), "$options": "i"}
+        films = list(
+            db.films.find(
+                {"$or": [{"title": pattern}, {"genre": pattern}, {"director": pattern}]}
+            ).sort("title", 1)
+        )
+        for f in films:
+            f["avg"], f["count"] = film_stats(str(f["_id"]))
+        reviews = list(db.reviews.find({"text": pattern}).sort("created_at", -1).limit(20))
+    return render_template("search.html", q=q, films=films, reviews=reviews)
 
 
 
