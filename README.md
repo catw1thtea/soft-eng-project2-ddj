@@ -8,6 +8,17 @@ Reel Talk is a social app where film lovers can share, discover, and discuss mov
 
 [View our user stories on the Issues page](https://github.com/catw1thtea/soft-eng-project2-ddj/issues?q=is%3Aissue)
 
+- As a new user, I want to create an account so that I can save and share my movie reviews.
+- As a registered user, I want to log in and log out so that I can securely access my account.
+- As a visitor, I want to browse a list of movies so that I can discover films to watch or review.
+- As a visitor, I want to view detailed information about a movie so that I can learn more about it before watching or reviewing it.
+- As a registered user, I want to write a review and rate a movie so that I can share my opinion with other users.
+- As a registered user, I want to edit or delete my reviews so that I can update or remove my opinions.
+- As a visitor, I want to search for movies by title so that I can quickly find a specific film.
+- As a registered user, I want to view my profile so that I can see my review history and ratings.
+- As a visitor, I want to see the average rating of a movie so that I can understand how other users feel about it.
+- As a registered user, I want to save movies to a personal watchlist so that I can keep track of films I plan to watch.
+
 ## Task boards
 
 [View our sprint task boards on the Projects page](https://github.com/users/catw1thtea/projects/1/views/1)
