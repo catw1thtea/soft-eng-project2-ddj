@@ -1,0 +1,8 @@
+<article class="card">
+  <div class="card-head">
+    <a href="{{ url_for('film', film_id=r.film_id) }}" class="film-link"><strong>{{ r.film_title }}</strong></a>
+    <span class="stars">{{ "★" * r.rating }}{{ "☆" * (5 - r.rating) }}</span>
+  </div>
+  <p>{{ r.text }}</p>
+  <p class="small">@{{ r.username }} · {{ r.created_at.strftime("%b %d") }}</p>
+</article>

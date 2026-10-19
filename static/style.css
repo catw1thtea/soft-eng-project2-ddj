@@ -38,3 +38,12 @@ button {
 }
 .bottom a { color: #ccc; text-decoration: none; font-size: 14px; }
 .bottom a.primary { color: #f5c518; font-weight: 600; }
+
+.film-title { margin-bottom: 4px; }
+.film-link { color: #eee; text-decoration: none; }
+.film-link:hover { color: #f5c518; }
+.stat-row { display: flex; align-items: center; gap: 20px; background: #1e1e1e; border-radius: 12px; padding: 14px; margin: 14px 0 20px; }
+.stat { display: flex; flex-direction: column; align-items: center; }
+.stat-big { font-size: 24px; font-weight: 700; color: #f5c518; }
+.btn-link { margin-left: auto; background: #f5c518; color: #121212; text-decoration: none; font-weight: 600; padding: 10px 14px; border-radius: 8px; font-size: 14px; }
+h3 { font-size: 16px; margin: 0 0 10px; }

@@ -134,9 +134,40 @@ def write():
                     "created_at": datetime.now(timezone.utc),
                 }
             )
-            return redirect(url_for("feed"))
-    return render_template("write.html", films=films)
+            return redirect(url_for("film", film_id=str(film["_id"])))
+    return render_template(
+        "write.html", films=films, selected=request.args.get("film_id", "")
+    )
 
+
+# films
+
+
+def film_stats(film_id):
+    """Return (average rating rounded to 1 decimal, review count) for a film."""
+    pipeline = [
+        {"$match": {"film_id": film_id}},
+        {"$group": {"_id": None, "avg": {"$avg": "$rating"}, "count": {"$sum": 1}}},
+    ]
+    rows = list(db.reviews.aggregate(pipeline))
+    if not rows:
+        return None, 0
+    return round(rows[0]["avg"], 1), rows[0]["count"]
+
+
+@app.route("/film/<film_id>")
+@login_required
+def film(film_id):
+    try:
+        doc = db.films.find_one({"_id": ObjectId(film_id)})
+    except Exception:
+        doc = None
+    if not doc:
+        flash("That film doesn't exist.")
+        return redirect(url_for("feed"))
+    reviews = list(db.reviews.find({"film_id": film_id}).sort("created_at", -1))
+    avg, count = film_stats(film_id)
+    return render_template("film.html", film=doc, reviews=reviews, avg=avg, count=count)
 
 
 

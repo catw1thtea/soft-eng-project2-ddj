@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ film.title }}{% endblock %}
+{% block content %}
+<a href="{{ url_for('feed') }}" class="small">&larr; Back</a>
+<h2 class="film-title">{{ film.title }} <span class="small">({{ film.year }})</span></h2>
+<p class="small">{{ film.director }} · {{ film.genre }}</p>
+
+<div class="stat-row">
+  <div class="stat">
+    <span class="stat-big">{% if avg %}{{ avg }}{% else %}–{% endif %}</span>
+    <span class="small">avg rating</span>
+  </div>
+  <div class="stat">
+    <span class="stat-big">{{ count }}</span>
+    <span class="small">review{{ "" if count == 1 else "s" }}</span>
+  </div>
+  <a href="{{ url_for('write', film_id=film._id) }}" class="btn-link">Review it</a>
+</div>
+
+<h3>Reviews</h3>
+{% for r in reviews %}
+  {% include "_review_card.html" %}
+{% else %}
+  <p class="empty">No reviews yet. Be the first.</p>
+{% endfor %}
+{% endblock %}

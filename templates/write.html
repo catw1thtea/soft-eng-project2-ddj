@@ -7,7 +7,7 @@
     <select name="film_id" required>
       <option value="">Choose a film</option>
       {% for f in films %}
-        <option value="{{ f._id }}">{{ f.title }} ({{ f.year }})</option>
+        <option value="{{ f._id }}" {% if f._id|string == selected %}selected{% endif %}>{{ f.title }} ({{ f.year }})</option>
       {% endfor %}
     </select>
   </label>
