@@ -1,0 +1,8 @@
+<label>Rating
+  <div class="rate">
+    {% for n in range(5, 0, -1) %}
+      <input type="radio" id="star{{ n }}" name="rating" value="{{ n }}" {% if n == current %}checked{% endif %} required>
+      <label for="star{{ n }}" title="{{ n }} star{{ '' if n == 1 else 's' }}">★</label>
+    {% endfor %}
+  </div>
+</label>

@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 {% block title %}{{ film.title }}{% endblock %}
 {% block content %}
-<a href="{{ url_for('feed') }}" class="small">&larr; Back</a>
-<h2 class="film-title">{{ film.title }} <span class="small">({{ film.year }})</span></h2>
-<p class="small">{{ film.director }} · {{ film.genre }}</p>
+<a href="{{ url_for('feed') }}" class="back">&larr; Feed</a>
+<div class="film-hero">
+  <div class="poster">{{ film.title[0]|upper }}</div>
+  <div>
+    <h2 class="film-title">{{ film.title }}</h2>
+    <p class="small" style="margin:4px 0 0">{{ film.year }} · {{ film.genre }}<br>Directed by {{ film.director }}</p>
+  </div>
+</div>
 
 <div class="stat-row">
   <div class="stat">

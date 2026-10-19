@@ -1,17 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Edit review{% endblock %}
 {% block content %}
-<a href="{{ url_for('film', film_id=review.film_id) }}" class="small">&larr; Back</a>
+<a href="{{ url_for('film', film_id=review.film_id) }}" class="back">&larr; {{ review.film_title }}</a>
 <h2>Edit review</h2>
-<p class="small">{{ review.film_title }}</p>
 <form method="post" class="form">
-  <label>Rating
-    <select name="rating" required>
-      {% for n in range(5, 0, -1) %}
-        <option value="{{ n }}" {% if n == review.rating %}selected{% endif %}>{{ "★" * n }}</option>
-      {% endfor %}
-    </select>
-  </label>
+  {% with current = review.rating %}{% include "_rating_picker.html" %}{% endwith %}
   <label>Review
     <textarea name="text" rows="5" required>{{ review.text }}</textarea>
   </label>

@@ -11,11 +11,7 @@
       {% endfor %}
     </select>
   </label>
-  <label>Rating
-    <select name="rating" required>
-      {% for n in range(5, 0, -1) %}<option value="{{ n }}">{{ "★" * n }}</option>{% endfor %}
-    </select>
-  </label>
+  {% with current = 5 %}{% include "_rating_picker.html" %}{% endwith %}
   <label>Review
     <textarea name="text" rows="5" placeholder="What did you think?" required></textarea>
   </label>

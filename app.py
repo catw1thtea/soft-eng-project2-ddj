@@ -233,7 +233,8 @@ def search():
         for f in films:
             f["avg"], f["count"] = film_stats(str(f["_id"]))
         reviews = list(db.reviews.find({"text": pattern}).sort("created_at", -1).limit(20))
-    return render_template("search.html", q=q, films=films, reviews=reviews)
+    genres = sorted(g for g in db.films.distinct("genre") if g)
+    return render_template("search.html", q=q, films=films, reviews=reviews, genres=genres)
 
 
 # profiles
