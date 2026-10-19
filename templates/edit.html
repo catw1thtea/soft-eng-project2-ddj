@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Edit review{% endblock %}
+{% block content %}
+<a href="{{ url_for('film', film_id=review.film_id) }}" class="small">&larr; Back</a>
+<h2>Edit review</h2>
+<p class="small">{{ review.film_title }}</p>
+<form method="post" class="form">
+  <label>Rating
+    <select name="rating" required>
+      {% for n in range(5, 0, -1) %}
+        <option value="{{ n }}" {% if n == review.rating %}selected{% endif %}>{{ "★" * n }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Review
+    <textarea name="text" rows="5" required>{{ review.text }}</textarea>
+  </label>
+  <button type="submit">Save changes</button>
+</form>
+<form method="post" action="{{ url_for('delete_review', review_id=review._id) }}" class="form danger-form"
+      onsubmit="return confirm('Delete this review? This cannot be undone.');">
+  <input type="hidden" name="next" value="{{ url_for('film', film_id=review.film_id) }}">
+  <button type="submit" class="danger">Delete review</button>
+</form>
+{% endblock %}

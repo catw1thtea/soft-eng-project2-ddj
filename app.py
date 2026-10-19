@@ -140,6 +140,50 @@ def write():
     )
 
 
+def own_review_or_none(review_id):
+    """Return the review only if it exists and belongs to the current user."""
+    try:
+        doc = db.reviews.find_one({"_id": ObjectId(review_id)})
+    except Exception:
+        return None
+    if not doc or doc["user_id"] != current_user.id:
+        return None
+    return doc
+
+
+@app.route("/review/<review_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_review(review_id):
+    review = own_review_or_none(review_id)
+    if not review:
+        flash("You can only edit your own reviews.")
+        return redirect(url_for("feed"))
+    if request.method == "POST":
+        rating = int(request.form["rating"])
+        text = request.form["text"].strip()
+        if not 1 <= rating <= 5 or not text:
+            flash("Pick a rating from 1 to 5 and write something.")
+        else:
+            db.reviews.update_one(
+                {"_id": review["_id"]},
+                {"$set": {"rating": rating, "text": text, "edited_at": datetime.now(timezone.utc)}},
+            )
+            return redirect(url_for("film", film_id=review["film_id"]))
+    return render_template("edit.html", review=review)
+
+
+@app.route("/review/<review_id>/delete", methods=["POST"])
+@login_required
+def delete_review(review_id):
+    review = own_review_or_none(review_id)
+    if not review:
+        flash("You can only delete your own reviews.")
+        return redirect(url_for("feed"))
+    db.reviews.delete_one({"_id": review["_id"]})
+    flash("Review deleted.")
+    return redirect(request.form.get("next") or url_for("feed"))
+
+
 # films
 
 

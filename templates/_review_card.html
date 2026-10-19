@@ -4,5 +4,11 @@
     <span class="stars">{{ "★" * r.rating }}{{ "☆" * (5 - r.rating) }}</span>
   </div>
   <p>{{ r.text }}</p>
-  <p class="small">@{{ r.username }} · {{ r.created_at.strftime("%b %d") }}</p>
+  <p class="small">
+    @{{ r.username }}
+    · {{ r.created_at.strftime("%b %d") }}{% if r.edited_at %} · edited{% endif %}
+    {% if r.user_id == current_user.id %}
+      · <a href="{{ url_for('edit_review', review_id=r._id) }}">Edit</a>
+    {% endif %}
+  </p>
 </article>

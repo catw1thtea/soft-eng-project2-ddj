@@ -47,3 +47,8 @@ button {
 .stat-big { font-size: 24px; font-weight: 700; color: #f5c518; }
 .btn-link { margin-left: auto; background: #f5c518; color: #121212; text-decoration: none; font-weight: 600; padding: 10px 14px; border-radius: 8px; font-size: 14px; }
 h3 { font-size: 16px; margin: 0 0 10px; }
+
+.danger-form { margin-top: 24px; }
+button.danger { background: transparent; color: #e5484d; border: 1px solid #e5484d; }
+.user-link { color: #999; text-decoration: none; }
+.user-link:hover { color: #f5c518; }
