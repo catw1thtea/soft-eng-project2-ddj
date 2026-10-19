@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+{% block content %}
+<h2>Search</h2>
+<form method="get" class="search-form">
+  <input name="q" value="{{ q }}" placeholder="Title, genre, director or review text" autofocus>
+  <button type="submit">Go</button>
+</form>
+
+{% if q %}
+  <h3>Films</h3>
+  {% for f in films %}
+    <a href="{{ url_for('film', film_id=f._id) }}" class="film-row">
+      <div class="poster">{{ f.title[0]|upper }}</div>
+      <div class="grow">
+        <strong>{{ f.title }} <span class="meta">({{ f.year }})</span></strong>
+        <span class="meta">{{ f.genre }} · {{ f.director }}</span>
+      </div>
+      <span class="stars">{% if f.avg %}★ {{ f.avg }}{% else %}<span class="off">★</span>{% endif %}</span>
+    </a>
+  {% else %}
+    <p class="small">No films match “{{ q }}”.</p>
+  {% endfor %}
+
+  {% if reviews %}
+    <h3>Reviews mentioning “{{ q }}”</h3>
+    {% for r in reviews %}{% include "_review_card.html" %}{% endfor %}
+  {% endif %}
+{% else %}
+  <h3>Browse by genre</h3>
+  <div class="chips">
+    {% for g in genres %}<a href="{{ url_for('search', q=g) }}" class="chip">{{ g }}</a>{% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

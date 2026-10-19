@@ -1,0 +1,16 @@
+<article class="card">
+  <div class="card-head">
+    <a href="{{ url_for('film', film_id=r.film_id) }}" class="film-link">{{ r.film_title }}</a>
+    {% with n = r.rating %}{% include "_stars.html" %}{% endwith %}
+  </div>
+  <p>{{ r.text }}</p>
+  <div class="meta-row">
+    <a href="{{ url_for('user_profile', username=r.username) }}" class="user-link">@{{ r.username }}</a>
+    <span>·</span>
+    <span>{{ r.created_at.strftime("%b %d") }}</span>
+    {% if r.edited_at %}<span>· edited</span>{% endif %}
+    {% if r.user_id == current_user.id %}
+      <a href="{{ url_for('edit_review', review_id=r._id) }}" class="edit">Edit</a>
+    {% endif %}
+  </div>
+</article>

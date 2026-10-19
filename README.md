@@ -36,8 +36,8 @@ You need Python 3.10 or newer and git installed.
 1. Clone the repository and move into it:
 
    ```
-   git clone https://github.com/YOUR-ORG-OR-USER/YOUR-REPO.git
-   cd YOUR-REPO
+   git clone https://github.com/catw1thtea/soft-eng-project2-ddj.git
+   cd soft-eng-project2-ddj
    ```
 
 2. Create and activate a virtual environment:
@@ -69,12 +69,31 @@ You need Python 3.10 or newer and git installed.
    python3 seed.py
    ```
 
-6. Start the app:
+6. Run the course setup script once (installs the git hooks):
+
+   ```
+   python3 .automations/setup.py
+   ```
+
+7. Start the app:
 
    ```
    python3 app.py
    ```
 
-7. Open http://127.0.0.1:5000 in your browser. For the intended mobile view, open your browser's developer tools and switch to a phone-sized device view.
+8. Open http://127.0.0.1:5000 in your browser. For the intended mobile view, open your browser's developer tools and switch to a phone-sized device view.
 
 Create an account on the sign-up screen to get started.
+
+## Screens
+
+| Screen | Route | What it does |
+| --- | --- | --- |
+| Sign up | `/register` | Create an account |
+| Log in | `/login` | Log in / log out |
+| Feed | `/` | Latest reviews from everyone (reads from DB) |
+| Write review | `/write` | Add a review (adds to DB) |
+| Film page | `/film/<id>` | A film's details, every review of it and its average rating (reads from DB) |
+| Edit review | `/review/<id>/edit` | Edit or delete one of your own reviews (edits / deletes in DB) |
+| Search | `/search?q=` | Search films by title, genre or director and reviews by text (searches DB) |
+| Profile | `/profile`, `/user/<name>` | Your review history and stats, or another user's |

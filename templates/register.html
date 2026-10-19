@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Sign up{% endblock %}
 {% block content %}
-<h2>Create an account</h2>
-<form method="post" class="form">
-  <input name="username" placeholder="Username" required>
-  <input name="password" type="password" placeholder="Password" required>
-  <button type="submit">Sign up</button>
-</form>
-<p class="small">Already have one? <a href="{{ url_for('login') }}">Log in</a></p>
+<div class="auth">
+  <div class="brand-mark">R</div>
+  <h2>Join Reel Talk</h2>
+  <p class="lead">Share what you watch. Find what to watch next.</p>
+  <form method="post" class="form">
+    <input name="username" placeholder="Pick a username" autocomplete="username" required>
+    <input name="password" type="password" placeholder="Password" autocomplete="new-password" required>
+    <button type="submit">Create account</button>
+  </form>
+  <p class="small">Already have one? <a href="{{ url_for('login') }}">Log in</a></p>
+</div>
 {% endblock %}

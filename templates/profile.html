@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}@{{ profile_user.username }}{% endblock %}
+{% block content %}
+<div class="profile-head">
+  <div class="avatar">{{ profile_user.username[0]|upper }}</div>
+  <div>
+    <h2>@{{ profile_user.username }}</h2>
+    <span class="small">{% if is_me %}This is you{% else %}Member{% endif %}</span>
+  </div>
+</div>
+
+<div class="stat-row">
+  <div class="stat"><span class="stat-big">{{ reviews|length }}</span><span class="small">reviews</span></div>
+  <div class="stat"><span class="stat-big">{% if avg_given %}{{ avg_given }}{% else %}–{% endif %}</span><span class="small">avg given</span></div>
+  {% if is_me %}<a href="{{ url_for('write') }}" class="btn-link">+ Review</a>{% endif %}
+</div>
+
+<h3>{% if is_me %}Your reviews{% else %}Reviews{% endif %}</h3>
+{% for r in reviews %}
+  {% include "_review_card.html" %}
+{% else %}
+  <p class="empty">{% if is_me %}You haven't reviewed anything yet.{% else %}No reviews yet.{% endif %}</p>
+{% endfor %}
+{% endblock %}
