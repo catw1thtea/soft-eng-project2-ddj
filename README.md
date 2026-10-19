@@ -2,7 +2,7 @@
 
 ## Product vision statement
 
-Reel Talk is a mobile-friendly social app where film lovers share, discover, and discuss movie reviews.
+Reel Talk is a social app where film lovers can share, discover, and discuss movie reviews.
 
 ## User stories
 
@@ -10,16 +10,15 @@ Reel Talk is a mobile-friendly social app where film lovers share, discover, and
 
 ## Task boards
 
-[View our sprint task boards on the Projects page](https://github.com/YOUR-ORG-OR-USER/YOUR-REPO/projects)
+[View our sprint task boards on the Projects page](https://github.com/users/catw1thtea/projects/1/views/1)
 
 ## Team
 
-- [Name](https://github.com/username)
-- [Name](https://github.com/username)
-- [Name](https://github.com/username)
-- [Name](https://github.com/username)
+- [Jay](https://github.com/Jayyu2005)
+- [Danial](https://github.com/catw1thtea)
+- [Daniyal](https://github.com/DaniyalMlk)
 
-## Running the app locally
+## Steps necessary to run the software
 
 You need Python 3.10 or newer and git installed.
 
