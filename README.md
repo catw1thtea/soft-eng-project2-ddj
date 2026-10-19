@@ -4,6 +4,12 @@
 
 Reel Talk is a social app where film lovers can share, discover, and discuss movie reviews.
 
+## Team
+
+- [Jay](https://github.com/Jayyu2005)
+- [Danial](https://github.com/catw1thtea)
+- [Daniyal](https://github.com/DaniyalMlk)
+
 ## User stories
 
 [View our user stories on the Issues page](https://github.com/catw1thtea/soft-eng-project2-ddj/issues?q=is%3Aissue)
@@ -22,12 +28,6 @@ Reel Talk is a social app where film lovers can share, discover, and discuss mov
 ## Task boards
 
 [View our sprint task boards on the Projects page](https://github.com/users/catw1thtea/projects/1/views/1)
-
-## Team
-
-- [Jay](https://github.com/Jayyu2005)
-- [Danial](https://github.com/catw1thtea)
-- [Daniyal](https://github.com/DaniyalMlk)
 
 ## Steps necessary to run the software
 
