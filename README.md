@@ -6,7 +6,7 @@ Reel Talk is a social app where film lovers can share, discover, and discuss mov
 
 ## User stories
 
-[View our user stories on the Issues page](https://github.com/YOUR-ORG-OR-USER/YOUR-REPO/issues)
+[View our user stories on the Issues page](https://github.com/catw1thtea/soft-eng-project2-ddj/issues?q=is%3Aissue)
 
 ## Task boards
 
