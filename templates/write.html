@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Write a review{% endblock %}
+{% block content %}
+<h2>Write a review</h2>
+<form method="post" class="form">
+  <label>Film
+    <select name="film_id" required>
+      <option value="">Choose a film</option>
+      {% for f in films %}
+        <option value="{{ f._id }}">{{ f.title }} ({{ f.year }})</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Rating
+    <select name="rating" required>
+      {% for n in range(5, 0, -1) %}<option value="{{ n }}">{{ "★" * n }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Review
+    <textarea name="text" rows="5" placeholder="What did you think?" required></textarea>
+  </label>
+  <button type="submit">Post review</button>
+</form>
+{% endblock %}
