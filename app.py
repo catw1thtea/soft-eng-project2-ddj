@@ -236,6 +236,37 @@ def search():
     return render_template("search.html", q=q, films=films, reviews=reviews)
 
 
+# profiles
+
+
+def render_profile(user_doc):
+    reviews = list(db.reviews.find({"user_id": str(user_doc["_id"])}).sort("created_at", -1))
+    avg_given = round(sum(r["rating"] for r in reviews) / len(reviews), 1) if reviews else None
+    return render_template(
+        "profile.html",
+        profile_user=user_doc,
+        reviews=reviews,
+        avg_given=avg_given,
+        is_me=str(user_doc["_id"]) == current_user.id,
+    )
+
+
+@app.route("/profile")
+@login_required
+def profile():
+    return render_profile(db.users.find_one({"_id": ObjectId(current_user.id)}))
+
+
+@app.route("/user/<username>")
+@login_required
+def user_profile(username):
+    doc = db.users.find_one({"username": username})
+    if not doc:
+        flash("No user called @" + username + ".")
+        return redirect(url_for("feed"))
+    return render_profile(doc)
+
+
 
 
 if __name__ == "__main__":

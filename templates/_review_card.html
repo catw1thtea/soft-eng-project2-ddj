@@ -5,7 +5,7 @@
   </div>
   <p>{{ r.text }}</p>
   <p class="small">
-    @{{ r.username }}
+    <a href="{{ url_for('user_profile', username=r.username) }}" class="user-link">@{{ r.username }}</a>
     · {{ r.created_at.strftime("%b %d") }}{% if r.edited_at %} · edited{% endif %}
     {% if r.user_id == current_user.id %}
       · <a href="{{ url_for('edit_review', review_id=r._id) }}">Edit</a>
