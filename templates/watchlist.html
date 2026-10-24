@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Watchlist{% endblock %}
+{% block content %}
+<h2>My Watchlist</h2>
+<p class="small">Keep track of what you want to watch and what you've seen.</p>
+
+<h3>To Watch <span class="meta">({{ to_watch|length }})</span></h3>
+{% for item in to_watch %}
+  <div class="watchlist-row">
+    <a href="{{ url_for('film', film_id=item.film._id) }}" class="watchlist-film">
+      <div class="poster">{{ item.film.title[0]|upper }}</div>
+      <div class="grow">
+        <strong>{{ item.film.title }} <span class="meta">({{ item.film.year }})</span></strong>
+        <span class="meta">{{ item.film.genre }} · {{ item.film.director }}</span>
+      </div>
+    </a>
+    <form action="{{ url_for('toggle_watched', film_id=item.film._id) }}" method="post">
+      <button class="watched-toggle" type="submit" aria-label="Mark {{ item.film.title }} as watched" title="Mark as watched">✓</button>
+    </form>
+  </div>
+{% else %}
+  <p class="empty">Nothing left to watch. Find a film in Search or uncheck a watched film below.</p>
+  <a href="{{ url_for('search') }}" class="btn-link">Find films</a>
+{% endfor %}
+
+<section class="recently-watched">
+  <h3>Recently Watched <span class="meta">({{ recently_watched|length }})</span></h3>
+  {% for item in recently_watched %}
+    <div class="watchlist-row">
+      <a href="{{ url_for('film', film_id=item.film._id) }}" class="watchlist-film">
+        <div class="poster">{{ item.film.title[0]|upper }}</div>
+        <div class="grow">
+          <strong>{{ item.film.title }} <span class="meta">({{ item.film.year }})</span></strong>
+          <span class="meta">Watched {{ item.watched_at.strftime('%b %d, %Y') }}</span>
+        </div>
+      </a>
+      <form action="{{ url_for('toggle_watched', film_id=item.film._id) }}" method="post">
+        <button class="watched-toggle is-watched" type="submit" aria-label="Unmark {{ item.film.title }} as watched" title="Move back to To Watch">✓</button>
+      </form>
+    </div>
+  {% else %}
+    <p class="small">Films you mark as watched will appear here.</p>
+  {% endfor %}
+</section>
+{% endblock %}
