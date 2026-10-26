@@ -11,7 +11,7 @@
   <h3>Films</h3>
   {% for f in films %}
     <a href="{{ url_for('film', film_id=f._id) }}" class="film-row">
-      <div class="poster">{{ f.title[0]|upper }}</div>
+      {% with poster=f.poster, label=f.title %}{% include "_poster.html" %}{% endwith %}
       <div class="grow">
         <strong>{{ f.title }} <span class="meta">({{ f.year }})</span></strong>
         <span class="meta">{{ f.genre }} · {{ f.director }}</span>

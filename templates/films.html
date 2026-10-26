@@ -21,16 +21,18 @@
   <a href="{{ url_for('films', genre=genre, sort='year') }}" class="{{ 'on' if sort == 'year' }}">Newest</a>
 </div>
 
+<div class="film-grid">
 {% for f in films %}
-  <a href="{{ url_for('film', film_id=f._id) }}" class="film-row">
-    <div class="poster">{{ f.title[0]|upper }}</div>
-    <div class="grow">
-      <strong>{{ f.title }} <span class="meta">({{ f.year }})</span></strong>
-      <span class="meta">{{ f.genre }} · {{ f.director }}</span>
+  <a href="{{ url_for('film', film_id=f._id) }}" class="film-card">
+    <div class="poster-wrap">
+      {% with poster=f.poster, label=f.title %}{% include "_poster.html" %}{% endwith %}
+      {% if f.avg %}<span class="badge">★ {{ f.avg }}</span>{% endif %}
     </div>
-    <span class="stars">{% if f.avg %}★ {{ f.avg }}{% else %}<span class="off">★</span>{% endif %}</span>
+    <strong>{{ f.title }}</strong>
+    <span class="meta">{{ f.year }} · {{ f.genre }}</span>
   </a>
 {% else %}
   <p class="empty">No films in this genre yet.</p>
 {% endfor %}
+</div>
 {% endblock %}
