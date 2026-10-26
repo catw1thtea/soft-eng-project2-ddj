@@ -92,12 +92,26 @@ def logout():
     return redirect(url_for("login"))
 
 
+def attach_posters(reviews):
+    """Add a 'poster' key to each review dict from its film, in one query."""
+    ids = {r["film_id"] for r in reviews if ObjectId.is_valid(r.get("film_id", ""))}
+    if not ids:
+        return reviews
+    posters = {
+        str(f["_id"]): f.get("poster")
+        for f in db.films.find({"_id": {"$in": [ObjectId(i) for i in ids]}}, {"poster": 1})
+    }
+    for r in reviews:
+        r["poster"] = posters.get(r["film_id"])
+    return reviews
+
+
 # Data page
 
 @app.route("/")
 @login_required
 def feed():
-    reviews = list(db.reviews.find().sort("created_at", -1).limit(50))
+    reviews = attach_posters(list(db.reviews.find().sort("created_at", -1).limit(50)))
 
 
     
@@ -212,8 +226,12 @@ def film(film_id):
         return redirect(url_for("feed"))
     reviews = list(db.reviews.find({"film_id": film_id}).sort("created_at", -1))
     avg, count = film_stats(film_id)
+    dist = {n: 0 for n in range(5, 0, -1)}
+    for r in reviews:
+        dist[r["rating"]] = dist.get(r["rating"], 0) + 1
+    dist_max = max(dist.values()) or 1
     saved = db.watchlist.find_one({"user_id": current_user.id, "film_id": film_id}) is not None
-    return render_template("film.html", film=doc, reviews=reviews, avg=avg, count=count, saved=saved)
+    return render_template("film.html", film=doc, reviews=reviews, avg=avg, count=count, dist=dist, dist_max=dist_max, saved=saved)
 
 
 # tags — short lowercase labels on films, like "mind-bending" or "feel-good"
@@ -329,7 +347,7 @@ def search():
         )
         for f in films:
             f["avg"], f["count"] = film_stats(str(f["_id"]))
-        reviews = list(db.reviews.find({"text": pattern}).sort("created_at", -1).limit(20))
+        reviews = attach_posters(list(db.reviews.find({"text": pattern}).sort("created_at", -1).limit(20)))
     genres = sorted(g for g in db.films.distinct("genre") if g)
     return render_template("search.html", q=q, films=films, reviews=reviews, genres=genres)
 
@@ -401,7 +419,7 @@ def toggle_watchlist(film_id):
 
 
 def render_profile(user_doc):
-    reviews = list(db.reviews.find({"user_id": str(user_doc["_id"])}).sort("created_at", -1))
+    reviews = attach_posters(list(db.reviews.find({"user_id": str(user_doc["_id"])}).sort("created_at", -1)))
     avg_given = round(sum(r["rating"] for r in reviews) / len(reviews), 1) if reviews else None
     return render_template(
         "profile.html",

@@ -1,12 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Films<script>
-  // Scroll each swipeable row so its first selected chip is visible.
-  document.querySelectorAll(".chips.scroll").forEach(function (row) {
-    var on = row.querySelector(".chip.on");
-    if (on) row.scrollLeft = on.offsetLeft - row.offsetLeft - 16;
-  });
-</script>
-{% endblock %}
+{% block title %}Films{% endblock %}
 {% block content %}
 <h2>Films</h2>
 <form method="get" action="{{ url_for('search') }}" class="search-form">
@@ -64,19 +57,21 @@
   <a href="{{ filter_url(sort='year') }}" class="{{ 'on' if sort == 'year' }}">Newest</a>
 </div>
 
+<div class="film-grid">
 {% for f in films %}
-  <a href="{{ url_for('film', film_id=f._id) }}" class="film-row">
-    <div class="poster">{{ f.title[0]|upper }}</div>
-    <div class="grow">
-      <strong>{{ f.title }} <span class="meta">({{ f.year }})</span></strong>
-      <span class="meta">{{ f.genre }} · {{ f.director }}</span>
-      {% if f.tags %}<span class="tag-line">{% for t in f.tags[:3] %}#{{ t }}{{ " · " if not loop.last }}{% endfor %}</span>{% endif %}
+  <a href="{{ url_for('film', film_id=f._id) }}" class="film-card">
+    <div class="poster-wrap">
+      {% with poster=f.poster, label=f.title %}{% include "_poster.html" %}{% endwith %}
+      {% if f.avg %}<span class="badge">★ {{ f.avg }}</span>{% endif %}
     </div>
-    <span class="stars">{% if f.avg %}★ {{ f.avg }}{% else %}<span class="off">★</span>{% endif %}</span>
+    <strong>{{ f.title }}</strong>
+    <span class="meta">{{ f.year }} · {{ f.genre }}</span>
+    {% if f.tags %}<span class="tag-line">{% for t in f.tags[:2] %}#{{ t }}{{ " · " if not loop.last }}{% endfor %}</span>{% endif %}
   </a>
 {% else %}
   <p class="empty">No films match these filters.<br><a href="{{ url_for('films') }}">Clear filters</a></p>
 {% endfor %}
+</div>
 <script>
   // Scroll each swipeable row so its first selected chip is visible.
   document.querySelectorAll(".chips.scroll").forEach(function (row) {

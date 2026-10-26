@@ -1,14 +1,19 @@
 {% extends "base.html" %}
 {% block title %}{{ film.title }}{% endblock %}
 {% block content %}
-<a href="{{ url_for('feed') }}" class="back">&larr; Feed</a>
-<div class="film-hero">
-  <div class="poster">{{ film.title[0]|upper }}</div>
-  <div>
-    <h2 class="film-title">{{ film.title }}</h2>
-    <p class="small" style="margin:4px 0 0">{{ film.year }} · {{ film.genre }}<br>Directed by {{ film.director }}</p>
+<section class="hero">
+  {% if film.poster %}<div class="hero-bg" style="background-image:url('{{ film.poster }}')"></div>{% endif %}
+  <div class="hero-fade"></div>
+  <a href="{{ url_for('films') }}" class="back hero-back">&larr; Films</a>
+  <div class="hero-content">
+    {% with poster=film.poster, label=film.title %}{% include "_poster.html" %}{% endwith %}
+    <div class="hero-text">
+      <h2 class="film-title">{{ film.title }}</h2>
+      <p class="small">{{ film.year }} · {{ film.genre }}</p>
+      <p class="small">Directed by {{ film.director }}</p>
+    </div>
   </div>
-</div>
+</section>
 
 <div class="film-tags">
   {% if film.tags %}
@@ -40,7 +45,26 @@
   <button type="submit" class="{{ 'saved' if saved else '' }}">{{ '✓ In Watchlist — Remove' if saved else '+ Add to Watchlist' }}</button>
 </form>
 
+{% if film.synopsis %}
+  <h3>About</h3>
+  <input type="checkbox" id="more" class="more-toggle">
+  <p class="synopsis">{{ film.synopsis }}</p>
+  <label for="more" class="more-label"><span class="show">Read more</span><span class="hide">Show less</span></label>
+{% endif %}
+
+{% if count %}
+  <h3>Ratings</h3>
+  <div class="dist">
+    {% for n in range(5, 0, -1) %}
+      <span class="dist-label">{{ n }} ★</span>
+      <div class="bar"><span style="width: {{ (dist[n] / dist_max * 100)|round }}%"></span></div>
+      <span class="dist-count">{{ dist[n] }}</span>
+    {% endfor %}
+  </div>
+{% endif %}
+
 <h3>Reviews</h3>
+{% set compact = true %}
 {% for r in reviews %}
   {% include "_review_card.html" %}
 {% else %}
