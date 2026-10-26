@@ -27,7 +27,8 @@ Reel Talk is a social app where film lovers can share, discover, and discuss mov
 
 ## Task boards
 
-[View our sprint task boards on the Projects page](https://github.com/users/catw1thtea/projects/1/views/1)
+- [Sprint 1 task board](https://github.com/users/catw1thtea/projects/1/views/1)
+- [Sprint 2 task board](https://github.com/users/catw1thtea/projects/1/views/1) <!-- TODO: replace with the Sprint 2 project link once created -->
 
 ## Steps necessary to run the software
 
@@ -44,7 +45,7 @@ You need Python 3.10 or newer and git installed.
 
    ```
    python3 -m venv venv
-   source .venv/bin/activate        # Mac/Linux
+   source venv/bin/activate         # Mac/Linux
    venv\Scripts\activate           # Windows
    ```
 
@@ -96,4 +97,5 @@ Create an account on the sign-up screen to get started.
 | Film page | `/film/<id>` | A film's details, every review of it and its average rating (reads from DB) |
 | Edit review | `/review/<id>/edit` | Edit or delete one of your own reviews (edits / deletes in DB) |
 | Search | `/search?q=` | Search films by title, genre or director and reviews by text (searches DB) |
-| Profile | `/profile`, `/user/<name>` | Your review history and stats, or another user's |
+| Profile | `/profile`, `/user/<name>` | Your review history and stats, or another user's (reads from DB) |
+| Watchlist | `/watchlist` | Films you saved to watch later and ones you marked as watched (adds / edits / deletes in DB) |
