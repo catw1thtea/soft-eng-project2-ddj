@@ -212,7 +212,8 @@ def film(film_id):
         return redirect(url_for("feed"))
     reviews = list(db.reviews.find({"film_id": film_id}).sort("created_at", -1))
     avg, count = film_stats(film_id)
-    return render_template("film.html", film=doc, reviews=reviews, avg=avg, count=count)
+    saved = db.watchlist.find_one({"user_id": current_user.id, "film_id": film_id}) is not None
+    return render_template("film.html", film=doc, reviews=reviews, avg=avg, count=count, saved=saved)
 
 
 # search
@@ -235,6 +236,69 @@ def search():
         reviews = list(db.reviews.find({"text": pattern}).sort("created_at", -1).limit(20))
     genres = sorted(g for g in db.films.distinct("genre") if g)
     return render_template("search.html", q=q, films=films, reviews=reviews, genres=genres)
+
+
+# watchlist — one saved film per user, with a unique compound index
+
+@app.route("/watchlist")
+@login_required
+def watchlist():
+    saved = list(db.watchlist.find({"user_id": current_user.id}))
+    film_ids = [ObjectId(item["film_id"]) for item in saved if ObjectId.is_valid(item.get("film_id", ""))]
+    film_by_id = {str(f["_id"]): f for f in db.films.find({"_id": {"$in": film_ids}})}
+    to_watch, recently_watched = [], []
+    for item in saved:
+        film_doc = film_by_id.get(item.get("film_id"))
+        if not film_doc:
+            continue
+        entry = {"film": film_doc, "saved_at": item.get("created_at"), "watched_at": item.get("watched_at")}
+        if entry["watched_at"]:
+            recently_watched.append(entry)
+        else:
+            to_watch.append(entry)
+    to_watch.sort(key=lambda item: item["saved_at"] or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+    recently_watched.sort(key=lambda item: item["watched_at"], reverse=True)
+    return render_template("watchlist.html", to_watch=to_watch, recently_watched=recently_watched)
+
+
+@app.route("/watchlist/<film_id>/watched", methods=["POST"])
+@login_required
+def toggle_watched(film_id):
+    if not ObjectId.is_valid(film_id):
+        flash("Invalid film.")
+        return redirect(url_for("watchlist"))
+    key = {"user_id": current_user.id, "film_id": film_id}
+    saved = db.watchlist.find_one(key)
+    if not saved:
+        flash("Add the film to your watchlist first.")
+        return redirect(url_for("watchlist"))
+    if saved.get("watched_at"):
+        db.watchlist.update_one(key, {"$unset": {"watched_at": ""}})
+        flash("Moved back to your watchlist.")
+    else:
+        db.watchlist.update_one(key, {"$set": {"watched_at": datetime.now(timezone.utc)}})
+        flash("Marked as watched.")
+    return redirect(url_for("watchlist"))
+
+
+@app.route("/watchlist/<film_id>/toggle", methods=["POST"])
+@login_required
+def toggle_watchlist(film_id):
+    if not ObjectId.is_valid(film_id):
+        flash("Invalid film.")
+        return redirect(url_for("watchlist"))
+    film_doc = db.films.find_one({"_id": ObjectId(film_id)})
+    if not film_doc:
+        flash("That film doesn't exist.")
+        return redirect(url_for("watchlist"))
+    key = {"user_id": current_user.id, "film_id": film_id}
+    if db.watchlist.find_one(key):
+        db.watchlist.delete_one(key)
+        flash("Removed from your watchlist.")
+    else:
+        db.watchlist.update_one(key, {"$setOnInsert": {"created_at": datetime.now(timezone.utc)}}, upsert=True)
+        flash("Added to your watchlist.")
+    return redirect(url_for("film", film_id=film_id))
 
 
 # profiles

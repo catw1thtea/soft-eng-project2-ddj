@@ -22,6 +22,10 @@
   <a href="{{ url_for('write', film_id=film._id) }}" class="btn-link">Review it</a>
 </div>
 
+<form action="{{ url_for('toggle_watchlist', film_id=film._id) }}" method="post" class="watchlist-action">
+  <button type="submit" class="{{ 'saved' if saved else '' }}">{{ '✓ In Watchlist — Remove' if saved else '+ Add to Watchlist' }}</button>
+</form>
+
 <h3>Reviews</h3>
 {% for r in reviews %}
   {% include "_review_card.html" %}
