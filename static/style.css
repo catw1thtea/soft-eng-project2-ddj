@@ -191,3 +191,24 @@ button.danger { background: transparent; color: var(--danger); border: 1px solid
 .sort-row { display: flex; align-items: center; gap: 14px; margin: 14px 0 12px; font-size: 13px; }
 .sort-row a { color: var(--muted); text-decoration: none; font-weight: 500; }
 .sort-row a.on { color: var(--accent); }
+
+/* tags and filters */
+.filter-label { margin: 16px 0 0; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.chips.scroll { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+.chips.scroll::-webkit-scrollbar { display: none; }
+.chips.scroll .chip { flex: none; }
+.chip.tag::before { content: "#"; opacity: 0.6; margin-right: 1px; }
+.active-filters { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+.active-filters a { color: var(--accent); text-decoration: none; font-weight: 500; white-space: nowrap; }
+.film-tags { margin: 14px 0 0; }
+.film-tags .chips { margin-top: 0; }
+.tag-form { display: flex; gap: 8px; margin-top: 10px; }
+.tag-form input { flex: 1; padding: 10px 12px; font-size: 14px; }
+.tag-form button { padding: 10px 14px; font-size: 14px; }
+.film-row .tag-line { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.filter-label .hint { text-transform: none; letter-spacing: 0; font-weight: 400; margin-left: 6px; }
+.more-filters { margin-top: 12px; }
+.more-filters summary { cursor: pointer; font-size: 13px; font-weight: 500; color: var(--accent); list-style: none; }
+.more-filters summary::-webkit-details-marker { display: none; }
+.more-filters summary::after { content: " ▾"; }
+.more-filters[open] summary::after { content: " ▴"; }

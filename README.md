@@ -94,8 +94,9 @@ Create an account on the sign-up screen to get started.
 | Log in | `/login` | Log in / log out |
 | Feed | `/` | Latest reviews from everyone (reads from DB) |
 | Write review | `/write` | Add a review (adds to DB) |
-| Film page | `/film/<id>` | A film's details, every review of it and its average rating (reads from DB) |
+| Film page | `/film/<id>` | A film's details, every review of it and its average rating; users add tags to the film here (reads from / adds to DB) |
 | Edit review | `/review/<id>/edit` | Edit or delete one of your own reviews (edits / deletes in DB) |
-| Search | `/search?q=` | Search films by title, genre or director and reviews by text (searches DB) |
+| Films | `/films` | Browse all films and filter by genre, tags, decade and minimum rating, then sort (searches DB) |
+| Search | `/search?q=` | Search films by title, genre, director or tag and reviews by text (searches DB) |
 | Profile | `/profile`, `/user/<name>` | Your review history and stats, or another user's (reads from DB) |
 | Watchlist | `/watchlist` | Films you saved to watch later and ones you marked as watched (adds / edits / deletes in DB) |

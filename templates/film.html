@@ -10,6 +10,20 @@
   </div>
 </div>
 
+<div class="film-tags">
+  {% if film.tags %}
+  <div class="chips">
+    {% for t in film.tags %}
+      <a href="{{ url_for('films', tag=t) }}" class="chip tag">{{ t }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <form action="{{ url_for('add_tag', film_id=film._id) }}" method="post" class="tag-form">
+    <input name="tag" maxlength="24" placeholder="Add a tag, like feel-good" required>
+    <button type="submit">Tag</button>
+  </form>
+</div>
+
 <div class="stat-row">
   <div class="stat">
     <span class="stat-big">{% if avg %}{{ avg }}{% else %}–{% endif %}</span>
