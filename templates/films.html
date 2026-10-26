@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Films{% endblock %}
+{% block content %}
+<h2>Films</h2>
+<form method="get" action="{{ url_for('search') }}" class="search-form">
+  <input name="q" placeholder="Search title, genre, director or reviews">
+  <button type="submit">Go</button>
+</form>
+
+<div class="chips">
+  <a href="{{ url_for('films', sort=sort) }}" class="chip {{ 'on' if not genre }}">All</a>
+  {% for g in genres %}
+    <a href="{{ url_for('films', genre=g, sort=sort) }}" class="chip {{ 'on' if g == genre }}">{{ g }}</a>
+  {% endfor %}
+</div>
+
+<div class="sort-row">
+  <span class="small">Sort by</span>
+  <a href="{{ url_for('films', genre=genre, sort='title') }}" class="{{ 'on' if sort == 'title' }}">Title</a>
+  <a href="{{ url_for('films', genre=genre, sort='rating') }}" class="{{ 'on' if sort == 'rating' }}">Rating</a>
+  <a href="{{ url_for('films', genre=genre, sort='year') }}" class="{{ 'on' if sort == 'year' }}">Newest</a>
+</div>
+
+{% for f in films %}
+  <a href="{{ url_for('film', film_id=f._id) }}" class="film-row">
+    <div class="poster">{{ f.title[0]|upper }}</div>
+    <div class="grow">
+      <strong>{{ f.title }} <span class="meta">({{ f.year }})</span></strong>
+      <span class="meta">{{ f.genre }} · {{ f.director }}</span>
+    </div>
+    <span class="stars">{% if f.avg %}★ {{ f.avg }}{% else %}<span class="off">★</span>{% endif %}</span>
+  </a>
+{% else %}
+  <p class="empty">No films in this genre yet.</p>
+{% endfor %}
+{% endblock %}

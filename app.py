@@ -216,6 +216,25 @@ def film(film_id):
     return render_template("film.html", film=doc, reviews=reviews, avg=avg, count=count, saved=saved)
 
 
+@app.route("/films")
+@login_required
+def films():
+    genre = request.args.get("genre", "").strip()
+    sort = request.args.get("sort", "title")
+    query = {"genre": genre} if genre else {}
+    docs = list(db.films.find(query))
+    for f in docs:
+        f["avg"], f["count"] = film_stats(str(f["_id"]))
+    if sort == "rating":
+        docs.sort(key=lambda f: (f["avg"] or 0, f["count"]), reverse=True)
+    elif sort == "year":
+        docs.sort(key=lambda f: f.get("year", 0), reverse=True)
+    else:
+        docs.sort(key=lambda f: f["title"].lower())
+    genres = sorted(g for g in db.films.distinct("genre") if g)
+    return render_template("films.html", films=docs, genres=genres, genre=genre, sort=sort)
+
+
 # search
 
 
