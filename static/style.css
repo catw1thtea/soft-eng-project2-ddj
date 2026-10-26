@@ -185,3 +185,9 @@ button.danger { background: transparent; color: var(--danger); border: 1px solid
 .watched-toggle.is-watched { background: var(--accent); color: var(--accent-ink); }
 .watched-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .recently-watched { margin-top: 38px; padding-bottom: 18px; }
+
+/* films browse */
+.chip.on { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+.sort-row { display: flex; align-items: center; gap: 14px; margin: 14px 0 12px; font-size: 13px; }
+.sort-row a { color: var(--muted); text-decoration: none; font-weight: 500; }
+.sort-row a.on { color: var(--accent); }
