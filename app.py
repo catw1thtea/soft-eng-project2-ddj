@@ -234,23 +234,100 @@ def film(film_id):
     return render_template("film.html", film=doc, reviews=reviews, avg=avg, count=count, dist=dist, dist_max=dist_max, saved=saved)
 
 
+# tags — short lowercase labels on films, like "mind-bending" or "feel-good"
+
+TAG_PATTERN = re.compile(r"^[a-z0-9][a-z0-9 -]{0,23}$")
+DECADES = [1970, 1980, 1990, 2000, 2010, 2020]
+
+
+def clean_tag(raw):
+    """Lowercase a tag and squash extra spaces. Returns None if it isn't a valid tag."""
+    tag = " ".join((raw or "").strip().lower().split())
+    return tag if TAG_PATTERN.match(tag) else None
+
+
 @app.route("/films")
 @login_required
 def films():
     genre = request.args.get("genre", "").strip()
     sort = request.args.get("sort", "title")
-    query = {"genre": genre} if genre else {}
+    decade = request.args.get("decade", "")
+    min_rating = request.args.get("min", "")
+    tags = list(dict.fromkeys(t for t in map(clean_tag, request.args.getlist("tag")) if t))
+
+    query = {}
+    if genre:
+        query["genre"] = genre
+    if tags:
+        query["tags"] = {"$all": tags}
+    if decade.isdigit():
+        query["year"] = {"$gte": int(decade), "$lt": int(decade) + 10}
+
     docs = list(db.films.find(query))
     for f in docs:
         f["avg"], f["count"] = film_stats(str(f["_id"]))
+    if min_rating in ("3", "4"):
+        docs = [f for f in docs if (f["avg"] or 0) >= int(min_rating)]
     if sort == "rating":
         docs.sort(key=lambda f: (f["avg"] or 0, f["count"]), reverse=True)
     elif sort == "year":
         docs.sort(key=lambda f: f.get("year", 0), reverse=True)
     else:
         docs.sort(key=lambda f: f["title"].lower())
+
     genres = sorted(g for g in db.films.distinct("genre") if g)
-    return render_template("films.html", films=docs, genres=genres, genre=genre, sort=sort)
+    popular = db.films.aggregate([
+        {"$unwind": "$tags"},
+        {"$group": {"_id": "$tags", "n": {"$sum": 1}}},
+        {"$sort": {"n": -1, "_id": 1}},
+        {"$limit": 14},
+    ])
+    tag_options = [row["_id"] for row in popular]
+    tag_options = [t for t in tags if t not in tag_options] + tag_options
+
+    current = {"genre": genre, "tag": tags, "decade": decade, "min": min_rating, "sort": sort}
+
+    def filter_url(toggle_tag=None, **changes):
+        """Link to this page with one filter changed and the rest kept."""
+        args = dict(current, **changes)
+        if toggle_tag:
+            args["tag"] = [t for t in tags if t != toggle_tag] if toggle_tag in tags else tags + [toggle_tag]
+        if args.get("sort") == "title":
+            args.pop("sort")
+        return url_for("films", **{k: v for k, v in args.items() if v})
+
+    return render_template(
+        "films.html",
+        films=docs,
+        genres=genres,
+        genre=genre,
+        sort=sort,
+        tags=tags,
+        tag_options=tag_options,
+        decade=decade,
+        decades=DECADES,
+        min_rating=min_rating,
+        filtering=bool(genre or tags or decade or min_rating),
+        filter_url=filter_url,
+    )
+
+
+@app.route("/film/<film_id>/tags", methods=["POST"])
+@login_required
+def add_tag(film_id):
+    if not ObjectId.is_valid(film_id):
+        flash("That film doesn't exist.")
+        return redirect(url_for("films"))
+    tag = clean_tag(request.form.get("tag"))
+    if not tag:
+        flash("Tags can be up to 24 characters: letters, numbers, spaces and dashes.")
+        return redirect(url_for("film", film_id=film_id))
+    result = db.films.update_one({"_id": ObjectId(film_id)}, {"$addToSet": {"tags": tag}})
+    if not result.matched_count:
+        flash("That film doesn't exist.")
+        return redirect(url_for("films"))
+    flash('Tagged "' + tag + '".' if result.modified_count else 'This film is already tagged "' + tag + '".')
+    return redirect(url_for("film", film_id=film_id))
 
 
 # search
@@ -265,7 +342,7 @@ def search():
         pattern = {"$regex": re.escape(q), "$options": "i"}
         films = list(
             db.films.find(
-                {"$or": [{"title": pattern}, {"genre": pattern}, {"director": pattern}]}
+                {"$or": [{"title": pattern}, {"genre": pattern}, {"director": pattern}, {"tags": pattern}]}
             ).sort("title", 1)
         )
         for f in films:

@@ -3,22 +3,58 @@
 {% block content %}
 <h2>Films</h2>
 <form method="get" action="{{ url_for('search') }}" class="search-form">
-  <input name="q" placeholder="Search title, genre, director or reviews">
+  <input name="q" placeholder="Search title, genre, director, tag or reviews">
   <button type="submit">Go</button>
 </form>
 
-<div class="chips">
-  <a href="{{ url_for('films', sort=sort) }}" class="chip {{ 'on' if not genre }}">All</a>
+<p class="filter-label">Genre</p>
+<div class="chips scroll">
+  <a href="{{ filter_url(genre='') }}" class="chip {{ 'on' if not genre }}">All</a>
   {% for g in genres %}
-    <a href="{{ url_for('films', genre=g, sort=sort) }}" class="chip {{ 'on' if g == genre }}">{{ g }}</a>
+    <a href="{{ filter_url(genre=g) }}" class="chip {{ 'on' if g == genre }}">{{ g }}</a>
   {% endfor %}
 </div>
 
+<p class="filter-label">Tags <span class="hint">pick as many as you like</span></p>
+{% if tag_options %}
+<div class="chips scroll">
+  {% for t in tag_options %}
+    <a href="{{ filter_url(toggle_tag=t) }}" class="chip tag {{ 'on' if t in tags }}">{{ t }}</a>
+  {% endfor %}
+</div>
+{% else %}
+<p class="small">No tags yet. Open any film and add the first one.</p>
+{% endif %}
+
+<details class="more-filters" {{ 'open' if decade or min_rating }}>
+  <summary>More filters{% if decade or min_rating %} ({{ [decade, min_rating]|select|list|length }}){% endif %}</summary>
+  <p class="filter-label">Decade</p>
+  <div class="chips scroll">
+    <a href="{{ filter_url(decade='') }}" class="chip {{ 'on' if not decade }}">Any</a>
+    {% for d in decades %}
+      <a href="{{ filter_url(decade=d|string) }}" class="chip {{ 'on' if decade == d|string }}">{{ d }}s</a>
+    {% endfor %}
+  </div>
+  <p class="filter-label">Rating</p>
+  <div class="chips">
+    <a href="{{ filter_url(min='') }}" class="chip {{ 'on' if not min_rating }}">Any</a>
+    <a href="{{ filter_url(min='3') }}" class="chip {{ 'on' if min_rating == '3' }}">★ 3+</a>
+    <a href="{{ filter_url(min='4') }}" class="chip {{ 'on' if min_rating == '4' }}">★ 4+</a>
+  </div>
+</details>
+
+{% if filtering %}
+<div class="active-filters">
+  <span>{{ films|length }} film{{ "" if films|length == 1 else "s" }} match</span>
+  <a href="{{ url_for('films', sort=sort if sort != 'title' else None) }}">Clear filters</a>
+</div>
+{% endif %}
+
 <div class="sort-row">
   <span class="small">Sort by</span>
-  <a href="{{ url_for('films', genre=genre, sort='title') }}" class="{{ 'on' if sort == 'title' }}">Title</a>
-  <a href="{{ url_for('films', genre=genre, sort='rating') }}" class="{{ 'on' if sort == 'rating' }}">Rating</a>
-  <a href="{{ url_for('films', genre=genre, sort='year') }}" class="{{ 'on' if sort == 'year' }}">Newest</a>
+  <a href="{{ filter_url(sort='title') }}" class="{{ 'on' if sort == 'title' }}">Title</a>
+  <a href="{{ filter_url(sort='rating') }}" class="{{ 'on' if sort == 'rating' }}">Rating</a>
+  <a href="{{ filter_url(sort='year') }}" class="{{ 'on' if sort == 'year' }}">Newest</a>
 </div>
 
 <div class="film-grid">
@@ -30,9 +66,17 @@
     </div>
     <strong>{{ f.title }}</strong>
     <span class="meta">{{ f.year }} · {{ f.genre }}</span>
+    {% if f.tags %}<span class="tag-line">{% for t in f.tags[:2] %}#{{ t }}{{ " · " if not loop.last }}{% endfor %}</span>{% endif %}
   </a>
 {% else %}
-  <p class="empty">No films in this genre yet.</p>
+  <p class="empty">No films match these filters.<br><a href="{{ url_for('films') }}">Clear filters</a></p>
 {% endfor %}
 </div>
+<script>
+  // Scroll each swipeable row so its first selected chip is visible.
+  document.querySelectorAll(".chips.scroll").forEach(function (row) {
+    var on = row.querySelector(".chip.on");
+    if (on) row.scrollLeft = on.offsetLeft - row.offsetLeft - 16;
+  });
+</script>
 {% endblock %}
