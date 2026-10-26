@@ -1,0 +1,2 @@
+{#- usage: {% with poster=url, label=title %}{% include "_poster.html" %}{% endwith %} -#}
+<div class="poster">{% if poster %}<img src="{{ poster }}" alt="{{ label }} poster" loading="lazy">{% else %}{{ label[0]|upper }}{% endif %}</div>
